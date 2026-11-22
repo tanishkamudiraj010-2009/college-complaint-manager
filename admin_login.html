@@ -1,0 +1,10 @@
+{% extends 'base.html' %}{% block title %}Admin Login{% endblock %}
+{% block body %}{% from 'base.html' import badge, csrf with context %}
+<div class="auth-wrap"><div class="container d-flex justify-content-center"><div class="auth-card">
+<div class="icon-chip"><i class="bi bi-shield-lock"></i></div><h2>Administrator login</h2><p class="text-secondary">Restricted to authorised college staff.</p>
+<form method="post" class="needs-validation" novalidate>{{ csrf() }}
+<div class="mb-3"><label class="form-label">Admin email</label><input type="email" name="email" class="form-control" required autofocus></div>
+<div class="mb-3"><label class="form-label">Password</label><input type="password" name="password" class="form-control" required></div>
+<button class="btn btn-green w-100">Log in to dashboard</button></form>
+<p class="small text-secondary text-center mt-3 mb-0">Demo: admin@college.edu / Admin@123</p>
+</div></div></div>{% endblock %}

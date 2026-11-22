@@ -1,0 +1,55 @@
+{% extends 'base.html' %}{% block title %}Home{% endblock %}
+{% block body %}
+{% from 'base.html' import badge, csrf with context %}
+<header class="hero"><div class="container"><div class="row align-items-center g-5">
+  <div class="col-lg-7">
+    <h1>Your Voice Matters – Let's Build a Better Campus</h1>
+    <p class="mt-3">College Complaint Manager gives every student one place to report problems, follow each complaint from submission to resolution, and see what the college is doing about it.</p>
+    <div class="d-flex flex-wrap gap-3 mt-4">
+      <a href="{{ url_for('submit') }}" class="btn btn-green btn-lg"><i class="bi bi-pencil-square me-1"></i> Submit a Complaint</a>
+      <a href="{{ url_for('track') }}" class="btn btn-lg btn-outline-light fw-semibold" style="border-radius:10px">Track a Complaint</a>
+    </div></div>
+  <div class="col-lg-5 d-none d-lg-block"><div class="ticket">
+    <div class="d-flex justify-content-between align-items-center mb-2"><strong>CMP-2026-8K3Q7A</strong>{{ badge('In Progress') }}</div>
+    <div class="fw-semibold">Water supply problem in Block B</div>
+    <div class="tracker"><div class="tstep done"><div class="tdot"><i class="bi bi-check"></i></div></div><div class="tstep done"><div class="tdot"><i class="bi bi-check"></i></div></div><div class="tstep done now"><div class="tdot"><i class="bi bi-wrench"></i></div></div><div class="tstep"><div class="tdot"></div></div></div>
+    <small class="text-secondary">Assigned to Hostel Warden Office</small></div></div>
+</div></div></header>
+
+<div class="container stat-strip"><div class="row g-3">
+  {% for label,key,cls in [('Total Complaints','total','navy'),('Resolved Complaints','resolved',''),('Pending Complaints','pending','amber')] %}
+  <div class="col-md-4"><div class="card-x stat-card {{ cls }} shadow-sm"><div class="stat-num" data-count="{{ s[key] }}">{{ s[key] }}</div><div class="text-secondary mt-1">{{ label }}</div></div></div>
+  {% endfor %}</div></div>
+
+<section id="about"><div class="container">
+  <div class="row g-4 align-items-end mb-4"><div class="col-lg-6"><h2 class="sec-title">A grievance portal students can actually follow</h2></div>
+  <div class="col-lg-6 text-secondary">Complaints are logged with a unique ID, sent to the right campus team, and updated at every step. Administrators see the whole picture through live analytics.</div></div>
+  <div class="row g-3">
+    {% for ic,t,d in [('bi-journal-text','Report in a minute','Pick a category and priority, describe the issue and attach a photo if it helps.'),('bi-geo-alt','Follow every step','Use your complaint ID to see the status, progress bar and every resolution note.'),('bi-people','Routed to the right team','Admins assign each complaint to the department responsible for fixing it.'),('bi-graph-up-arrow','Fix problems at the root','Charts and CSV reports show which areas of campus need attention most.')] %}
+    <div class="col-md-6 col-lg-3 reveal"><div class="card-x lift"><div class="icon-chip"><i class="bi {{ ic }}"></i></div><h5>{{ t }}</h5><p class="text-secondary mb-0">{{ d }}</p></div></div>{% endfor %}
+  </div></div></section>
+
+<section class="bg-white" id="privacy"><div class="container"><div class="row g-4">
+  <div class="col-lg-5"><h2 class="sec-title">Privacy and security built in</h2><p class="text-secondary">Your complaint is visible only to you and the administrators who handle it. Public tracking never shows your name or student ID.</p></div>
+  <div class="col-lg-7"><div class="row g-3">
+    {% for t,d in [('Hashed passwords','Passwords are stored with salted hashing, never as plain text.'),('Role-based access','Students and administrators have separate logins and permissions.'),('Protected forms','Every form carries a CSRF token and server-side validation.'),('Safe uploads','Only images up to 2 MB are accepted and renamed on upload.')] %}
+    <div class="col-sm-6"><div class="d-flex gap-2"><i class="bi bi-shield-check text-success fs-4"></i><div><strong>{{ t }}</strong><div class="text-secondary small">{{ d }}</div></div></div></div>{% endfor %}
+  </div></div></div></div></section>
+
+<section id="faq"><div class="container" style="max-width:820px"><h2 class="sec-title mb-4">Frequently asked questions</h2>
+<div class="accordion" id="faqs">
+{% for qn,a in [('Do I need an account to submit a complaint?','Yes. Register with your email and student ID so complaints are linked to you and appear on your dashboard.'),('How do I track my complaint?','Open Track Complaint and enter the ID shown after you submit, for example CMP-2026-AB12CD. You can also see all your complaints on your dashboard.'),('What do the statuses mean?','Submitted means we received it. Under Review means an admin is checking it. In Progress means a team is working on it. Resolved means it is fixed. Rejected means it cannot be actioned, with a reason in the updates.'),('Who can see my complaint?','Only you and the administrators. Public tracking shows the complaint details and status but not your personal information.'),('How long does resolution take?','High priority complaints are reviewed first. Every update appears on the tracking page as soon as an admin posts it.')] %}
+<div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button {{ '' if loop.first else 'collapsed' }}" data-bs-toggle="collapse" data-bs-target="#f{{ loop.index }}">{{ qn }}</button></h3>
+<div id="f{{ loop.index }}" class="accordion-collapse collapse {{ 'show' if loop.first }}" data-bs-parent="#faqs"><div class="accordion-body text-secondary">{{ a }}</div></div></div>{% endfor %}
+</div></div></section>
+
+<section class="bg-white" id="contact"><div class="container"><div class="row g-4">
+  <div class="col-lg-5"><h2 class="sec-title">Contact and feedback</h2><p class="text-secondary">Questions about the portal or ideas to improve it? Send them to the grievance cell.</p>
+    <p class="mb-1"><i class="bi bi-envelope text-success me-2"></i>grievance@college.edu</p><p class="mb-1"><i class="bi bi-telephone text-success me-2"></i>+91 40 0000 0000</p><p><i class="bi bi-clock text-success me-2"></i>Mon–Sat, 9:00 am – 5:00 pm</p></div>
+  <div class="col-lg-7"><form method="post" action="{{ url_for('contact') }}" class="card-x needs-validation" novalidate>{{ csrf() }}
+    <div class="row g-3"><div class="col-md-6"><label class="form-label">Name</label><input class="form-control" name="name" required></div>
+    <div class="col-md-6"><label class="form-label">Email</label><input type="email" class="form-control" name="email" required></div>
+    <div class="col-12"><label class="form-label">Message</label><textarea class="form-control" name="message" rows="4" minlength="10" required></textarea></div>
+    <div class="col-12"><button class="btn btn-green">Send feedback</button></div></div></form></div>
+</div></div></section>
+{% endblock %}

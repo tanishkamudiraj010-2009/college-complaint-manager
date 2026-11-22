@@ -1,0 +1,13 @@
+{% extends 'base.html' %}{% block title %}My Dashboard{% endblock %}
+{% block body %}{% from 'base.html' import badge, csrf with context %}
+<section><div class="container"><div class="row g-4">
+<div class="col-lg-4"><div class="card-x"><div class="icon-chip"><i class="bi bi-person"></i></div><h4>{{ u.name }}</h4>
+<dl class="mb-3 small"><dt class="text-secondary">Email</dt><dd>{{ u.email }}</dd><dt class="text-secondary">Student ID</dt><dd>{{ u.student_id }}</dd><dt class="text-secondary">Department</dt><dd>{{ u.department }}</dd><dt class="text-secondary">Member since</dt><dd>{{ u.created_at[:10] }}</dd></dl>
+<a href="{{ url_for('submit') }}" class="btn btn-green w-100">New complaint</a></div></div>
+<div class="col-lg-8"><div class="row g-3 mb-3">
+{% for l,k,c in [('Submitted','total','navy'),('Open','open','amber'),('Resolved','resolved','')] %}<div class="col-4"><div class="card-x stat-card {{ c }}"><div class="stat-num">{{ mine[k] }}</div><div class="text-secondary small">{{ l }}</div></div></div>{% endfor %}</div>
+<h4>My complaints</h4>
+{% if cs %}<div class="table-wrap table-responsive"><table class="table table-hover align-middle mb-0"><thead><tr><th>ID</th><th>Title</th><th>Category</th><th>Status</th><th>Date</th></tr></thead><tbody>
+{% for c in cs %}<tr><td><a href="{{ url_for('track', cid=c.cid) }}">{{ c.cid }}</a></td><td>{{ c.title }}</td><td>{{ c.category }}</td><td>{{ badge(c.status) }}</td><td>{{ c.created_at[:10] }}</td></tr>{% endfor %}</tbody></table></div>
+{% else %}<div class="card-x text-center text-secondary">You haven't submitted any complaints yet. <a href="{{ url_for('submit') }}">Submit your first one.</a></div>{% endif %}
+</div></div></div></section>{% endblock %}

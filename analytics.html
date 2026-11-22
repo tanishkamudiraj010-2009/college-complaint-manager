@@ -1,0 +1,24 @@
+{% extends 'base.html' %}{% block title %}Analytics{% endblock %}
+{% block body %}{% from 'base.html' import badge, csrf with context %}
+<section><div class="container">
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3"><div><a href="{{ url_for('admin') }}" class="text-decoration-none"><i class="bi bi-arrow-left"></i> Dashboard</a><h1 class="sec-title mb-0">Analytics and reports</h1></div>
+<a class="btn btn-green" href="{{ url_for('export_csv') }}"><i class="bi bi-download"></i> Download full CSV report</a></div>
+<div class="row g-3">
+<div class="col-lg-7"><div class="card-x"><h5>Complaints by category</h5><canvas id="cCat" height="130"></canvas></div></div>
+<div class="col-lg-5"><div class="card-x"><h5>Status distribution</h5><canvas id="cStatus" height="190"></canvas></div></div>
+<div class="col-lg-7"><div class="card-x"><h5>Monthly complaints</h5><canvas id="cMonth" height="130"></canvas></div></div>
+<div class="col-lg-5"><div class="card-x"><h5>Department-wise (student department)</h5><canvas id="cDept" height="190"></canvas></div></div>
+</div></div></section>{% endblock %}
+{% block scripts %}<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+fetch("{{ url_for('api_analytics') }}").then(r=>r.json()).then(d=>{
+ const pal=['#0b2545','#12a05f','#2f7fd1','#e6a100','#7a6ee0','#d64545','#4cc9a0','#8aa0b8'];
+ const mk=(id,type,obj,o={})=>new Chart(document.getElementById(id),{type,data:{labels:Object.keys(obj),datasets:[{data:Object.values(obj),backgroundColor:o.col||pal,borderColor:o.line,fill:o.fill,tension:.35,borderRadius:6}]},
+  options:{plugins:{legend:{display:type==='doughnut',position:'bottom'}},scales:type==='doughnut'?{}:{y:{beginAtZero:true,ticks:{precision:0}}},indexAxis:o.axis}});
+ mk('cCat','bar',d.category,{col:'#12a05f'});
+ const sc={Submitted:'#2f7fd1','Under Review':'#e6a100','In Progress':'#7a6ee0',Resolved:'#12a05f',Rejected:'#d64545'};
+ mk('cStatus','doughnut',d.status,{col:Object.keys(d.status).map(k=>sc[k])});
+ mk('cMonth','line',d.monthly,{col:'rgba(18,160,95,.15)',line:'#12a05f',fill:true});
+ mk('cDept','bar',d.department,{col:'#0b2545',axis:'y'});
+});
+</script>{% endblock %}

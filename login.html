@@ -1,0 +1,11 @@
+{% extends 'base.html' %}{% block title %}Student Login{% endblock %}
+{% block body %}{% from 'base.html' import badge, csrf with context %}
+<div class="auth-wrap"><div class="container d-flex justify-content-center"><div class="auth-card">
+<h2>Student login</h2><p class="text-secondary">Log in to submit and manage your complaints.</p>
+<form method="post" class="needs-validation" novalidate>{{ csrf() }}
+<div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required autofocus></div>
+<div class="mb-3"><label class="form-label">Password</label><input type="password" name="password" class="form-control" required></div>
+<button class="btn btn-green w-100">Log in</button></form>
+<p class="mt-3 mb-0 text-center">New here? <a href="{{ url_for('register') }}">Create a student account</a></p>
+<p class="small text-secondary text-center mt-2">Demo: student@college.edu / Student123</p>
+</div></div></div>{% endblock %}

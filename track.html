@@ -1,0 +1,22 @@
+{% extends 'base.html' %}{% block title %}Track Complaint{% endblock %}
+{% block body %}{% from 'base.html' import badge, csrf with context %}
+<section><div class="container" style="max-width:860px">
+<h1 class="sec-title">Track your complaint</h1>
+<form class="d-flex gap-2 my-3" method="get"><input name="cid" value="{{ cid }}" class="form-control form-control-lg" placeholder="Enter complaint ID, e.g. CMP-2026-AB12CD" required><button class="btn btn-green px-4">Track</button></form>
+{% if c %}
+{% set steps = ['Submitted','Under Review','In Progress','Resolved'] %}
+{% set idx = steps.index(c.status) if c.status in steps else 1 %}
+<div class="card-x mt-4">
+<div class="d-flex flex-wrap justify-content-between gap-2"><div><div class="text-secondary small">{{ c.cid }}</div><h3 class="mb-0">{{ c.title }}</h3></div><div>{{ badge(c.status) }}</div></div>
+<div class="tracker">{% for s in steps %}
+<div class="tstep {{ 'done' if idx>=loop.index0 and c.status!='Rejected' }} {{ 'now' if idx==loop.index0 and c.status!='Rejected' }} {{ 'rej' if c.status=='Rejected' and loop.index0==1 }}"><div class="tdot">{% if c.status=='Rejected' and loop.index0==1 %}<i class="bi bi-x-lg"></i>{% elif idx>=loop.index0 and c.status!='Rejected' %}<i class="bi bi-check-lg"></i>{% else %}{{ loop.index }}{% endif %}</div><span>{{ 'Rejected' if c.status=='Rejected' and loop.index0==1 else s }}</span></div>{% endfor %}</div>
+<hr><div class="row g-3 small">
+<div class="col-6 col-md-3"><div class="text-secondary">Category</div><strong>{{ c.category }}</strong></div>
+<div class="col-6 col-md-3"><div class="text-secondary">Priority</div><strong class="pr-{{ c.priority }}">{{ c.priority }}</strong></div>
+<div class="col-6 col-md-3"><div class="text-secondary">Submitted</div><strong>{{ c.created_at[:16] }}</strong></div>
+<div class="col-6 col-md-3"><div class="text-secondary">Assigned to</div><strong>{{ c.assigned_to or 'Awaiting assignment' }}</strong></div></div>
+<p class="mt-3">{{ c.description }}</p>
+{% if c.image %}<img src="{{ url_for('static', filename='uploads/'+c.image) }}" class="rounded mb-2" style="max-width:280px" alt="Supporting image">{% endif %}
+<h5 class="mt-3">Resolution updates</h5><div class="timeline">{% for h in hist %}<div class="ev"><div>{{ badge(h.status) }} <small class="text-secondary ms-2">{{ h.created_at[:16] }}</small></div><div>{{ h.note }}</div></div>{% endfor %}</div>
+</div>{% endif %}
+</div></section>{% endblock %}

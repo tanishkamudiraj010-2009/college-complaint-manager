@@ -1,0 +1,15 @@
+{% extends 'base.html' %}{% block title %}{{ c.cid }}{% endblock %}
+{% block body %}{% from 'base.html' import badge, csrf with context %}
+<section><div class="container"><a href="{{ url_for('admin') }}" class="text-decoration-none"><i class="bi bi-arrow-left"></i> Back to dashboard</a>
+<div class="row g-4 mt-1"><div class="col-lg-7"><div class="card-x">
+<div class="d-flex justify-content-between"><div class="text-secondary">{{ c.cid }}</div>{{ badge(c.status) }}</div><h3>{{ c.title }}</h3>
+<div class="row g-3 small mb-3"><div class="col-6"><div class="text-secondary">Student</div><strong>{{ c.name }} ({{ c.student_id }})</strong></div><div class="col-6"><div class="text-secondary">Email</div><strong>{{ stu.email if stu else '—' }}</strong></div>
+<div class="col-6"><div class="text-secondary">Department</div><strong>{{ c.department }}</strong></div><div class="col-6"><div class="text-secondary">Category / Priority</div><strong>{{ c.category }} / <span class="pr-{{ c.priority }}">{{ c.priority }}</span></strong></div>
+<div class="col-6"><div class="text-secondary">Submitted</div><strong>{{ c.created_at[:16] }}</strong></div><div class="col-6"><div class="text-secondary">Last updated</div><strong>{{ c.updated_at[:16] }}</strong></div></div>
+<p>{{ c.description }}</p>{% if c.image %}<img src="{{ url_for('static', filename='uploads/'+c.image) }}" class="rounded" style="max-width:100%;max-height:260px" alt="Attachment">{% endif %}
+<h5 class="mt-4">History</h5><div class="timeline">{% for h in hist %}<div class="ev">{{ badge(h.status) }} <small class="text-secondary ms-2">{{ h.created_at[:16] }}</small><div>{{ h.note }}</div></div>{% endfor %}</div></div></div>
+<div class="col-lg-5"><form method="post" class="card-x needs-validation" novalidate>{{ csrf() }}<h5>Update complaint</h5>
+<label class="form-label mt-2">Status</label><select name="status" class="form-select">{% for s in STATUSES %}<option {{ 'selected' if c.status==s }}>{{ s }}</option>{% endfor %}</select>
+<label class="form-label mt-3">Assign to department</label><select name="assigned_to" class="form-select"><option value="">Unassigned</option>{% for d in ASSIGN_TO %}<option {{ 'selected' if c.assigned_to==d }}>{{ d }}</option>{% endfor %}</select>
+<label class="form-label mt-3">Resolution note (visible to student)</label><textarea name="note" rows="3" maxlength="500" class="form-control"></textarea>
+<button class="btn btn-green w-100 mt-3">Save update</button></form></div></div></div></section>{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}{% block title %}Submit Complaint{% endblock %}
+{% block body %}{% from 'base.html' import badge, csrf with context %}
+<section><div class="container" style="max-width:820px">
+<h1 class="sec-title">Submit a complaint</h1><p class="text-secondary">Tell us what went wrong. You will get a complaint ID to track progress.</p>
+<form method="post" enctype="multipart/form-data" class="card-x needs-validation" novalidate>{{ csrf() }}<div class="row g-3">
+<div class="col-md-6"><label class="form-label">Student name</label><input name="name" class="form-control" value="{{ f.name }}" minlength="3" required></div>
+<div class="col-md-6"><label class="form-label">Student ID</label><input name="student_id" class="form-control" value="{{ f.student_id }}" required></div>
+<div class="col-md-6"><label class="form-label">Department</label><select name="department" class="form-select" required><option value="">Select…</option>{% for d in DEPARTMENTS %}<option {{ 'selected' if f.department==d }}>{{ d }}</option>{% endfor %}</select></div>
+<div class="col-md-6"><label class="form-label">Category</label><select name="category" class="form-select" required><option value="">Select…</option>{% for c in CATEGORIES %}<option {{ 'selected' if f.category==c }}>{{ c }}</option>{% endfor %}</select></div>
+<div class="col-12"><label class="form-label">Complaint title</label><input name="title" class="form-control" minlength="5" maxlength="120" value="{{ f.title }}" required></div>
+<div class="col-12"><label class="form-label">Description</label><textarea name="description" rows="5" class="form-control" minlength="20" required>{{ f.description }}</textarea><div class="form-text">Include where, when and who is affected (20+ characters).</div></div>
+<div class="col-12"><label class="form-label d-block">Priority</label>{% for p in PRIORITIES %}<div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="priority" id="p{{ p }}" value="{{ p }}" {{ 'checked' if (f.priority or 'Medium')==p }} required><label class="form-check-label" for="p{{ p }}">{{ p }}</label></div>{% endfor %}</div>
+<div class="col-12"><label class="form-label">Supporting image (optional)</label><input type="file" id="image" name="image" class="form-control" accept="image/*"><img id="preview" class="d-none mt-2 rounded" style="max-height:160px" alt="Preview"></div>
+<div class="col-12"><button class="btn btn-green btn-lg">Submit complaint</button></div></div></form>
+</div></section>{% endblock %}
