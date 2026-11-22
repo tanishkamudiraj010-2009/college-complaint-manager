@@ -23,7 +23,7 @@ Change the admin password before any real deployment, and set `SECRET_KEY` as an
 
 ## Structure
 - `app.py` – routes, auth, validation, SQLite access, CSV export, analytics API
-- `templates/` – Jinja pages (`base.html` is the shared layout)
+- `templates/` – Jinja pages (`base.html` is the shared layout
 - `static/` – CSS, JS, and `uploads/` for complaint images
 
 ## Security
